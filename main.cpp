@@ -6,7 +6,7 @@
 
 using namespace std;
 const uint16_t MAX_PACKET_SIZE = 256;
-const uint16_t INPUT_REGS_SIZE = 16;
+const uint16_t INPUT_REGS_SIZE = 72;
 const uint16_t HOLD_REGS_SIZE = 16;
 uint16_t inputRegs[INPUT_REGS_SIZE];
 uint16_t holdRegs[HOLD_REGS_SIZE];

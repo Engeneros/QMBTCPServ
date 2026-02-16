@@ -89,7 +89,7 @@ void MBServer::RegsWrite(uint16_t* regs, char* buf,  unsigned char sz)
 void MBServer::RegsRead(uint16_t* regs, char* buf,  unsigned char sz)
 {
    uint16_t temp;
-   char* dataPtr = GetDataPtr(buf);
+   char* dataPtr;// = GetDataPtr(buf);
    lock_guard<mutex>lock(mtx);
    {
        memcpy(buf, (char*) rgsInp, 4);
