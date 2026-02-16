@@ -1,9 +1,7 @@
 #ifndef MBSERVER_H
 #define MBSERVER_H
 
-#define uint16_t unsigned short
-#define uint8_t unsigned char
-
+#include "GeneralDefs.h"
 
 
 class MBServer

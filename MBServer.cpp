@@ -47,48 +47,9 @@ typedef enum
 } MBExceptionCode;
 
 
-
-//static uint16_t GetTransactionID(char* buf)
-//{
-//    uint16_t temp;
-//    memcpy(&temp, buf, 2);
-//    return ntohs(temp);
-//}
-
-//static uint16_t GetProtocolID(char* buf)
-//{
-//    uint16_t temp;
-//    memcpy(&temp, buf +PROTOCOL_ID_SHIFT, 2);
-//    return ntohs(temp);
-//}
-
-//static uint16_t GetPDUplusUILen(char* buf)
-//{
-//    uint16_t temp;
-//    memcpy(&temp, buf + LENGHT_SHIFT, 2);
-//    return ntohs(temp);
-//}
-
-//static uint16_t GetStartOffset(char* buf)
-//{
-//    uint16_t temp;
-//    memcpy(&temp, buf + START_ADDR_SHIFT, 2);
-//    return ntohs(temp);
-//}
-
-//static uint16_t GetDataSize(char* buf)
-//{
-//    uint16_t temp;
-//    memcpy(&temp, buf + QUANTITY_SHIFT, 2);
-//    return ntohs(temp);
-//}
-
-////uint16_t* rgsHold;
-//uint16_t* rgsInp;
-
 //extern uint16_t regsRO[256];
 using namespace std;
-std::mutex mtx;
+mutex mtx;
 
 uint8_t MBServer::GetCmd(char* buf)
 {
@@ -130,11 +91,19 @@ void MBServer::RegsRead(uint16_t* regs, char* buf,  unsigned char sz)
    uint16_t temp;
    char* dataPtr = GetDataPtr(buf);
    lock_guard<mutex>lock(mtx);
-   for(int regCnt = 0; regCnt < regsNum; ++regCnt)
    {
-       temp = htons(regs[regCnt]);
-       memcpy(dataPtr + 2 * regCnt, &temp, 2);
+       memcpy(buf, (char*) rgsInp, 4);
+       dataPtr = buf + 4;
+       int rgsShift = 2;
+       for (int dataNum = 0; dataNum < sz - 2; ++dataNum)
+           memcpy(dataPtr + dataNum * 2, (char*) &rgsInp[rgsShift + dataNum], 2);
    }
+//   for(int regCnt = 0; regCnt < regsNum; ++regCnt)
+//   {
+//       memcpy(buf, (char*) &rgsInp[regCnt], 2);
+////       temp = htons(regs[regCnt]);
+////       memcpy(dataPtr + 2 * regCnt, &temp, 2);
+//   }
 }
 
 MBServer::MBServer(uint16_t* holdRegs, uint16_t* inpRegs, unsigned int holdRgSz, unsigned int inpRgSz) :
@@ -152,9 +121,51 @@ MBServer::MBServer(uint16_t* holdRegs, uint16_t* inpRegs, unsigned int holdRgSz,
 // !! the size of the buf is at least 260 bytes
 int MBServer::Server(char* buf, int len, int* errCode)
 {
-
+    RegsRead(rgsInp, buf, len);
 }
  MBServer::~MBServer()
 {
 
- }
+}
+
+
+ ////////////////////////////////////////////////
+
+
+ //static uint16_t GetTransactionID(char* buf)
+ //{
+ //    uint16_t temp;
+ //    memcpy(&temp, buf, 2);
+ //    return ntohs(temp);
+ //}
+
+ //static uint16_t GetProtocolID(char* buf)
+ //{
+ //    uint16_t temp;
+ //    memcpy(&temp, buf +PROTOCOL_ID_SHIFT, 2);
+ //    return ntohs(temp);
+ //}
+
+ //static uint16_t GetPDUplusUILen(char* buf)
+ //{
+ //    uint16_t temp;
+ //    memcpy(&temp, buf + LENGHT_SHIFT, 2);
+ //    return ntohs(temp);
+ //}
+
+ //static uint16_t GetStartOffset(char* buf)
+ //{
+ //    uint16_t temp;
+ //    memcpy(&temp, buf + START_ADDR_SHIFT, 2);
+ //    return ntohs(temp);
+ //}
+
+ //static uint16_t GetDataSize(char* buf)
+ //{
+ //    uint16_t temp;
+ //    memcpy(&temp, buf + QUANTITY_SHIFT, 2);
+ //    return ntohs(temp);
+ //}
+
+ ////uint16_t* rgsHold;
+ //uint16_t* rgsInp;

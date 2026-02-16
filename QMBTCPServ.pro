@@ -10,6 +10,7 @@ QMAKE_CXXFLAGS += -std=c++17
 #
 SOURCES += \
         MBServer.cpp \
+        Writer.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -21,5 +22,7 @@ win32 {
 }
 
 HEADERS += \
-    MBServer.h
+    GeneralDefs.h \
+    MBServer.h \
+    Writer.h
 message("=== COMPILER FLAGS: $$QMAKE_CXXFLAGS ===")

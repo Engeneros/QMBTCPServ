@@ -1,12 +1,65 @@
 #include <QCoreApplication>
+#include <iostream>
+#include <thread>
+#include "Writer.h"
+#include "MBServer.h"
 
+using namespace std;
+const uint16_t MAX_PACKET_SIZE = 256;
+const uint16_t INPUT_REGS_SIZE = 16;
+const uint16_t HOLD_REGS_SIZE = 16;
+uint16_t inputRegs[INPUT_REGS_SIZE];
+uint16_t holdRegs[HOLD_REGS_SIZE];
+
+static void PrintRegs(char* bfr, int sz)
+{
+    uint32_t cnt = *(unsigned int*) bfr;
+    cout << "cnt = " << cnt << ", ";
+    uint16_t* dataBuff = (uint16_t*) (bfr + 4);
+    for(int pos = 0; pos < INPUT_REGS_SIZE - 2; ++pos)
+        cout << dataBuff[pos] << ", " ;
+    cout << endl;
+}
+
+void ADC_Task()
+ {
+     Writer wr(inputRegs, INPUT_REGS_SIZE);
+     while(true)
+         wr.Refresh();
+ }
+
+ void InterfaceTask()
+ {
+    char symb;
+    unsigned int cnt;
+    char ioBuff[MAX_PACKET_SIZE];
+    int err;
+    uint16_t size = sizeof (uint16_t)* INPUT_REGS_SIZE;
+
+    while(true)
+    {
+        cout << "press any key & <ENTER>" << endl;
+        cin >> symb;
+        cout << "ok, " << symb << " its work" << endl;
+        MBServer* srv = new MBServer(holdRegs, inputRegs, HOLD_REGS_SIZE, INPUT_REGS_SIZE);
+
+        srv->Server(ioBuff, size, &err);
+        delete srv;
+        PrintRegs(ioBuff, size);
+    }
+
+ }
 
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-
+    thread adc(ADC_Task);
+    thread interface(InterfaceTask);
+    adc.join();
+    interface.join();
     return a.exec();
+
 }
 
 
