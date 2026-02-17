@@ -5,8 +5,8 @@
 #include "MBServer.h"
 
 using namespace std;
-const uint16_t MAX_PACKET_SIZE = 256;
-const uint16_t INPUT_REGS_SIZE = 72;
+const uint16_t MAX_PACKET_SIZE = 4096;
+const uint16_t INPUT_REGS_SIZE = 600;
 const uint16_t HOLD_REGS_SIZE = 16;
 uint16_t inputRegs[INPUT_REGS_SIZE];
 uint16_t holdRegs[HOLD_REGS_SIZE];
@@ -28,6 +28,13 @@ void ADC_Task()
          wr.Refresh();
  }
 
+union ChUS
+{
+    short val;
+    char buf[2];
+};
+
+
  void InterfaceTask()
  {
     char symb;
@@ -44,8 +51,9 @@ void ADC_Task()
         MBServer* srv = new MBServer(holdRegs, inputRegs, HOLD_REGS_SIZE, INPUT_REGS_SIZE);
 
         srv->Server(ioBuff, size, &err);
-        delete srv;
         PrintRegs(ioBuff, size);
+        delete srv;
+
     }
 
  }

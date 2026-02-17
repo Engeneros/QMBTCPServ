@@ -1,6 +1,8 @@
 #include <mutex>
 //#include <winsock.h>
 #include "Writer.h"
+#include <iostream>
+
 
 using namespace std;
 extern mutex mtx;
@@ -20,5 +22,6 @@ void Writer::Refresh()
         regPt[1] = counter.word[1];
         for (int pos = 2; pos < rgSz; ++pos)
             regPt[pos] = ++regPt[pos];
+
     }
 }

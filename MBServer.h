@@ -21,9 +21,9 @@ private:
     // in sz, the number of two-byte registers for writing/reading
     // The buf array contains a Modbus (MBAP+PDU) packet received from the network
     // in the form in which they came in a ModBus packet from the network.
-    void RegsWrite(uint16_t* regs, char* buf,  unsigned char sz);
+    void RegsWrite(uint16_t* regs, char* buf,  unsigned int sz);
     //  After reading, the buf array contains a buffer ready to be sent to the network.
-    void RegsRead(uint16_t* regs, char* buf,  unsigned char sz);
+    void RegsRead(uint16_t* regs, char* buf,  unsigned int sz);
 public:
     MBServer(uint16_t* holdRegs, uint16_t* inpRegs, unsigned int holdRgSz, unsigned int inpRgSz);
     // The buf array contains a Modbus (MBAP+PDU) packet received from the network

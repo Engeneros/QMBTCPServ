@@ -81,12 +81,12 @@ char* MBServer::GetDataPtr(char* buf)
 // in sz, the number of two-byte registers for writing/reading
 // The buf array contains a Modbus (MBAP+PDU) packet received from the network
 // in the form in which they came in a ModBus packet from the network.
-void MBServer::RegsWrite(uint16_t* regs, char* buf,  unsigned char sz)
+void MBServer::RegsWrite(uint16_t* regs, char* buf,  unsigned int sz)
 {
 
 }
 //  After reading, the buf array contains a buffer ready to be sent to the network.
-void MBServer::RegsRead(uint16_t* regs, char* buf,  unsigned char sz)
+void MBServer::RegsRead(uint16_t* regs, char* buf,  unsigned int sz)
 {
    uint16_t temp;
    char* dataPtr;// = GetDataPtr(buf);
@@ -95,8 +95,10 @@ void MBServer::RegsRead(uint16_t* regs, char* buf,  unsigned char sz)
        memcpy(buf, (char*) rgsInp, 4);
        dataPtr = buf + 4;
        int rgsShift = 2;
+
        for (int dataNum = 0; dataNum < sz - 2; ++dataNum)
-           memcpy(dataPtr + dataNum * 2, (char*) &rgsInp[rgsShift + dataNum], 2);
+           for( int tx = 0; tx < 1000; ++tx)
+                memcpy(dataPtr + dataNum * 2, (char*) &rgsInp[rgsShift + dataNum], 2);
    }
 //   for(int regCnt = 0; regCnt < regsNum; ++regCnt)
 //   {
